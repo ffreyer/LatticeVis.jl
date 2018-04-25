@@ -5,6 +5,13 @@ function glsphere(;pos=Point3f0(0f0), r=0.1f0, quality=24)
 end
 
 
+"""
+    draw(cubic::CubicBasis)
+    draw(cubics::Vector{CubicBasis})
+
+Shows a 3D representation of the CubicBasis. If a Vector of CUbicBasis is given,
+each Basis will be drawn with a different, random color.
+"""
 draw(cubic::CubicBasis; kwargs...) = draw([cubic], kwargs...)
 
 function draw(

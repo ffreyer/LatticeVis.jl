@@ -4,7 +4,7 @@ abstract type Basis end
 struct CubicBasis <: Basis
     positions::Vector{Point3f0}
 end
-
+ 
 """
     sc(pos = Point3f0(0.))
 """
