@@ -1,9 +1,3 @@
 julia 0.6
 
-Quaternions
-GLVisualize
-GeometryTypes 0.4.4
-Reactive 0.6.0
-GLAbstraction 0.6.0
-GLWindow 0.7.1
-GLFW 1.4.1
+StaticArrays
