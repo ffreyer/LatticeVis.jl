@@ -8,7 +8,7 @@
 
 Install the package with
 
-    Pkg.clone("git://github.com/ffreyer/LatticeVis.git")
+    Pkg.clone("git://github.com/ffreyer/LatticeVis.jl.git")
 
 A lattice can be created with `Lattice(name_of_lattice, size)`, e.g. `Lattice(Honeycomb, 3)`. For this `name_of_lattice` has to be implemented as a
 `::Bravais`. Additional Bravais lattices can be implemented fairly easily, see
