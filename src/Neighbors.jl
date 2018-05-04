@@ -16,14 +16,10 @@ function creates. L has to be large enough to include all neighbors up to order
 N.
 """
 function get_neighbors(
-        BC::Vector{<: Bravais},
+        BC::Vector{Bravais{D, T}},
         N::Int64,
         L::Int64 = N
-    )
-
-    @assert mapreduce(
-        B -> length(B.pos), ==, BC
-    ) "The Bravais lattice composition must have common dimensionality"
+    ) where {D, T <: AbstractFloat}
 
     # Get all positions
     # This is a bit awkward due to arbitrary dimensionality
@@ -35,7 +31,6 @@ function get_neighbors(
         pos2d[i, :] = get_array_from_bravais(B, L)[:]
     end
 
-    # T_T
     # neighbor[Bravais_index][neighbor_lvl] = Vector of offsets
     neighbors = [Vector{NTuple{d+1, Int64}}[] for _ in eachindex(BC)]
 
@@ -77,14 +72,14 @@ end
 # less fault tolerant to use norm²
 norm²(v::Point) = dot(v, v)
 
+# shift every element of t by 'by'
+shift(t::NTuple, by::Int64) = ([x + by for x in t]...)
 
-function get_array_from_bravais(B::Bravais{2}, L::Int64)
-    [get_pos(B, (u, v)) for u in -L:L, v in -L:L]
-end
 
-function get_array_from_bravais(B::Bravais{3}, L::Int64)
-    [
-        get_pos(B, (u, v, w))
-        for u in -L:L, v in -L:L, w in -L:L
-    ]
+function get_array_from_bravais(B::Bravais{D}, L::Int64) where {D}
+    dims = [2L+1 for _ in 1:D]
+    reshape(
+        [get_pos(B, shift(ind2sub((dims...), i), -L-1)) for i in 1:(2L+1)^D],
+        dims...
+    )
 end
