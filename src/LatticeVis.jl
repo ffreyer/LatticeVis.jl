@@ -1,15 +1,21 @@
 module LatticeVis
 
 using StaticArrays.FixedSizeArrays
-import Base: size
+import Base: size, in, ==, +, show
 #
 # include("deprecated/LatticeVis.jl")
 
 include("Bravais.jl")
 export Honeycomb
+export fcc, diamond
+export get_pos
 
 include("Neighbors.jl")
 export get_neighbors
+
+include("LatticeGraph.jl")
+export Lattice
+export SimpleSite, SimpleBond, SimpleGraph
 
 
 end # module
