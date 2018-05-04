@@ -15,12 +15,13 @@ E.g. the following works to add positions:
 
 struct PosSite{D, T <: AbstractEdge} <: AbstractNode
     neighbors::Vector{Vector{T}}
-    pos::Point
+    pos::Point{D}
+    uvw::NTuple{D+1, Int64}
 end
 function PosSite(
         B::Bravais,
         neighbors::Vector{Vector{ET}},
-        uvw::NTuple{D, T}
+        uvw::NTuple{D+1, T}
     ) where {D, T <: AbstractFloat, ET <: AbstractEdge}
     PosSite(neighbors, get_pos(B, uvw))
 end
@@ -30,15 +31,16 @@ abstract type AbstractNode end
 abstract type AbstractEdge end
 abstract type AbstractGraph end
 
-struct SimpleSite{T <: AbstractEdge} <: AbstractNode
+struct SimpleSite{N, T <: AbstractEdge} <: AbstractNode
     neighbors::Vector{Vector{T}}
+    uvw::NTuple{N, Int64}
 end
 function SimpleSite(
         B::Bravais,
         neighbors::Vector{Vector{T}},
-        uvw::NTuple
-    ) where {T <: AbstractEdge}
-    SimpleSite(neighbors)
+        uvw::NTuple{N, Int64}
+    ) where {N, T <: AbstractEdge}
+    SimpleSite(neighbors, uvw)
 end
 
 struct SimpleBond{T <: AbstractNode} <: AbstractEdge
@@ -93,7 +95,7 @@ function Lattice(
         nodetype(
             Bs[i],
             [edgetype[] for _ in relative_offsets[i]],
-            ind2sub(([L for _ in 1:D]...), i)
+            (i, ind2sub(([L for _ in 1:D]...), j)...)
         ) for i in eachindex(Bs), j in 1:L^D
     ], length(Bs), [L for _ in 1:D]...)
 

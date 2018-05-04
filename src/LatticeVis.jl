@@ -18,4 +18,11 @@ export Lattice
 export SimpleSite, SimpleBond, SimpleGraph
 
 
+using PyPlot
+include("Pyplot.jl")
+export plot
+
+# using Compose
+# include("SVG.jl")
+# export save_vis
 end # module
