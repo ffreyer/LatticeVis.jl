@@ -8,22 +8,33 @@ Bravais(pos::Point, dirs::NTuple) = Bravais(:None, pos, dirs)
 # const BravaisComp = Array{Bravais}
 # BravaisComp(args...) = [args...]::BravaisComp
 
-Honeycomb() = [
+Honeycomb(pos = Point{2}(0.)) = [
     Bravais(
-        Point{2}(0.),
+        pos + Point{2}(0.),
         (
             Vec{2}(0., 2cosd(30.0)),
             2cosd(30.0) * Vec{2}(cosd(30.0), sind(30.0))
         )
     ),
     Bravais(
-        Point{2}(1.0, 0.0),
+        pos + Point{2}(1.0, 0.0),
         (
             Vec{2}(0., 2cosd(30.0)),
             2cosd(30.0) * Vec{2}(cosd(30.0), sind(30.0))
         )
     )
 ]
+
+fcc(pos = Point{3}(0.)) = Bravais(
+    pos,
+    (
+        Vec{3}(0.5, 0.5, 0.0),
+        Vec{3}(0.5, 0.0, 0.5),
+        Vec{3}(0.0, 0.5, 0.5)
+    )
+)
+
+diamond(pos = Point{3}(0.)) = [fcc(pos), fcc(pos + Point{3}(0.25))]
 
 
 function get_pos(B::Bravais, uvw)
@@ -36,4 +47,4 @@ end
 # more constructors
 
 # TODO
-# center!
+# center! for more safety in get_neighbors
