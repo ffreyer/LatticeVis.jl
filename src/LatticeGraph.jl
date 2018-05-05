@@ -49,16 +49,21 @@ struct SimpleBond{T <: AbstractNode} <: AbstractEdge
 end
 
 struct SimpleGraph{
-        D, T, N, NT <: AbstractNode, ET <: AbstractEdge
+        Dimensions,
+        T,
+        NodeType <: AbstractNode,
+        EdgeType <: AbstractEdge
     } <: AbstractGraph
-    bravais::Vector{Bravais{D, T}}
-    nodes::Array{NT, N}
-    edges::Vector{Vector{ET}}
+
+    bravais::Vector{Bravais{Dimensions, T}}
+    nodes::Array{NodeType}
+    edges::Vector{Vector{EdgeType}}
 end
 
 # Pretty printing to avoid printing circular references
 function show(io::IO, g::T) where {T <: AbstractGraph}
-    print(io, "Lattice Graph with ")
+    D = dims(g.bravais)
+    print(io, "$D-dimensional lattice graph with ")
     print(io, length(g.nodes))
     print(io, " sites and ")
     print(io, mapreduce(length, +, g.edges))
@@ -89,8 +94,11 @@ function Lattice(
         graphtype::Type{G} = SimpleGraph
     ) where {D, T, N <: AbstractNode, E <: AbstractEdge, G <: AbstractGraph}
 
+    # Search for neighbors
     relative_offsets = get_neighbors(Bs, N_neighbors)
 
+    # Generate Nodes/Sites without edges
+    # shape: (#number of Bravais lattices, L₁, ..., Lₙ) with n dimensions
     nodes = reshape([
         nodetype(
             Bs[i],
@@ -99,6 +107,8 @@ function Lattice(
         ) for i in eachindex(Bs), j in 1:L^D
     ], length(Bs), [L for _ in 1:D]...)
 
+
+    # Generate and connect edges
     edges = [edgetype[] for _ in 1:N_neighbors]
 
     for i in eachindex(nodes)

@@ -1,5 +1,7 @@
 module LatticeVis
 
+__precompile__(true)
+
 using StaticArrays.FixedSizeArrays
 import Base: size, in, ==, +, show
 #
@@ -8,7 +10,7 @@ import Base: size, in, ==, +, show
 include("Bravais.jl")
 export Honeycomb
 export fcc, diamond
-export get_pos
+export get_pos, dims
 
 include("Neighbors.jl")
 export get_neighbors
