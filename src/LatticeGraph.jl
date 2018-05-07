@@ -61,16 +61,6 @@ struct SimpleGraph{
     edges::Vector{Vector{EdgeType}}
 end
 
-# Pretty printing to avoid printing circular references
-function show(io::IO, g::T) where {T <: AbstractGraph}
-    D = dims(g.bravais)
-    print(io, "$D-dimensional lattice graph with ")
-    print(io, length(g.nodes))
-    print(io, " sites and ")
-    print(io, mapreduce(length, +, g.edges))
-    print(io, " bonds.")
-end
-
 
 """
     Lattice(B, L[; kwargs...])
@@ -180,4 +170,26 @@ function move(
     else
         return all(x -> 1 <= x <= L, to), (to...)
     end
+end
+
+
+
+# Pretty printing to avoid printing circular references
+function show(io::IO, g::T) where {T <: AbstractGraph}
+    D = dims(g.bravais)
+    print(io, "$D-dimensional lattice graph with ")
+    print(io, length(g.nodes))
+    print(io, " sites and ")
+    print(io, mapreduce(length, +, g.edges))
+    print(io, " bonds.")
+end
+
+# Pretty printing to avoid printing circular references
+function show(io::IO, n::T) where {T <: AbstractNode}
+    print(io, "Node $(n.uvw) with ")
+    print(io, "$(map(length, n.neighbors)) edges.")
+end
+# Pretty printing to avoid printing circular references
+function show(io::IO, e::T) where {T <: AbstractEdge}
+    print(io, "Edge connecting Node $(e.node1.uvw) and $(e.node2.uvw)")
 end
