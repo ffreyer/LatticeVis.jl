@@ -1,5 +1,3 @@
-# TODO find out if one can access the N in something like NTuple{N, T}
-
 """
     get_neighbors(B, N[, L = N])
 

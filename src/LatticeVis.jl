@@ -4,8 +4,6 @@ __precompile__(true)
 
 using StaticArrays.FixedSizeArrays
 import Base: size, in, ==, +, show
-#
-# include("deprecated/LatticeVis.jl")
 
 include("Bravais.jl")
 export Honeycomb
