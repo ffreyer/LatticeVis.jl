@@ -6,9 +6,9 @@ using StaticArrays.FixedSizeArrays
 import Base: size, in, ==, +, show
 
 include("Bravais.jl")
+export Bravais, get_pos, dims
 export Honeycomb
 export fcc, diamond
-export get_pos, dims
 
 include("Neighbors.jl")
 export get_neighbors
@@ -16,6 +16,7 @@ export get_neighbors
 include("LatticeGraph.jl")
 export Lattice
 export SimpleSite, SimpleBond, SimpleGraph
+export AbstractNode, AbstractEdge, AbstractGraph
 
 
 using PyPlot

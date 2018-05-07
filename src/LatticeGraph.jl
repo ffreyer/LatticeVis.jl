@@ -35,6 +35,7 @@ struct SimpleSite{N, T <: AbstractEdge} <: AbstractNode
     neighbors::Vector{Vector{T}}
     uvw::NTuple{N, Int64}
 end
+
 function SimpleSite(
         B::Bravais,
         neighbors::Vector{Vector{T}},
