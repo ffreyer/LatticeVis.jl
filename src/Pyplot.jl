@@ -32,5 +32,6 @@ function plot(lattice::T) where {T <: AbstractGraph}
         end
     end
 
+    axis("equal")
     lattice
 end
