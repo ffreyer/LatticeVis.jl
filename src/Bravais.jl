@@ -96,8 +96,6 @@ function honeycomb(;
         isa::Symbol = :primitive
     ) where T <: AbstractFloat
 
-    # TODO scale a b
-
     if isa == :cubic
         return merge(
             triangle(

@@ -63,12 +63,14 @@ end
 
 
 """
-    Lattice(B, L[; kwargs...])
+    Lattice(B[; kwargs...])
 
 Generates a lattice of size L^d based on a Bravais lattice B, which can be given
 as a ::Function, a ::Bravais or a ::Vector{Bravais}.
 
 Additional keyword arguments (kwargs) include
+- `L::Int64 = 8`: The size of the lattice
+- `Ls::NTuple{D, Int64} = (L, ..., L)`: The size of the lattice in D dimensions.
 - `do_periodic::Bool = true`: Generate lattice with periodic bonds.
 - `N_neighbors::Int64 = 1`: The number neighbor levels used.
 - `nodetype::Type{N} = SimpleSite`: Type of Node used to construct the lattice.
@@ -76,14 +78,17 @@ Additional keyword arguments (kwargs) include
 - `graphtype::Type{G} = SimpleGraph`: Type of Graph used to construct the lattice.
 """
 function Lattice(
-        Bs::Vector{Bravais{D, T}},
-        L::Int64;
+        Bs::Vector{Bravais{D, T}};
+        L::Int64 = 8,
+        Ls::NTuple{D, Int64} = ([L for _ in 1:D]...),
         do_periodic::Bool = true,
         N_neighbors::Int64 = 1,
         nodetype::Type{N} = SimpleSite,
         edgetype::Type{E} = SimpleBond,
         graphtype::Type{G} = SimpleGraph
     ) where {D, T, N <: AbstractNode, E <: AbstractEdge, G <: AbstractGraph}
+
+    dimsize = reduce(*, Ls)
 
     # Search for neighbors
     relative_offsets = get_neighbors(Bs, N_neighbors)
@@ -94,9 +99,9 @@ function Lattice(
         nodetype(
             Bs[i],
             [edgetype[] for _ in relative_offsets[i]],
-            (i, ind2sub(([L for _ in 1:D]...), j)...)
-        ) for i in eachindex(Bs), j in 1:L^D
-    ], length(Bs), [L for _ in 1:D]...)
+            (i, ind2sub(Ls, j)...)
+        ) for i in eachindex(Bs), j in 1:dimsize
+    ], length(Bs), Ls...)
 
 
     # Generate and connect edges
@@ -107,7 +112,7 @@ function Lattice(
 
         for (lvl, lvl_offsets) in enumerate(relative_offsets[from[1]])
             for (j, offset) in enumerate(lvl_offsets)
-                accept, to = move(from, offset, do_periodic, L)
+                accept, to = move(from, offset, do_periodic, Ls)
                 !accept && continue
 
                 e = edgetype(nodes[from...], nodes[to...])
@@ -156,19 +161,19 @@ function move(
         from::NTuple{N, T},     # starting indices
         by::NTuple{N, T},       # offset indices
         do_periodic::Bool,      # use periodic boundaries
-        L::Int64                # maximum index value
-    ) where {N, T}
+        Ls::NTuple{D, Int64}       # maximum index value
+    ) where {D, N, T}
 
     to = [from[i] + by[i] for i in 1:N]
 
     if do_periodic
-        for i in eachindex(to)
-            (to[i] < 1) && (to[i] += L)
-            (to[i] > L) && (to[i] -= L)
+        for i in 2:length(to)
+            (to[i] < 1) && (to[i] += Ls[i-1])
+            (to[i] > Ls[i-1]) && (to[i] -= Ls[i-1])
         end
         return true, (to...)
     else
-        return all(x -> 1 <= x <= L, to), (to...)
+        return all((x, L) -> 1 <= x <= L, to[2:end], Ls), (to...)
     end
 end
 
