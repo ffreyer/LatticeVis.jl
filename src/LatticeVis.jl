@@ -3,11 +3,11 @@ module LatticeVis
 __precompile__(true)
 
 using StaticArrays.FixedSizeArrays
-import Base: size, in, ==, +, show
+import Base: size, in, ==, +, show, merge
 
 include("Bravais.jl")
-export Bravais, get_pos, dims
-export Honeycomb
+export Bravais, get_pos, dims, merge
+export square, triangle, honeycomb
 export fcc, diamond
 
 include("Neighbors.jl")

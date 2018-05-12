@@ -3,3 +3,4 @@
 *.jl.mem
 src/deprecated
 src/SVG.jl
+examples/toric/*
