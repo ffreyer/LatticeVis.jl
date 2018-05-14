@@ -8,7 +8,7 @@ import Base: size, in, ==, +, show, merge
 include("UnitCell.jl")
 export UnitCell, get_pos, dims, merge
 export square, triangle, honeycomb
-export fcc, diamond
+export sc, bcc, fcc, diamond
 
 include("Neighbors.jl")
 export get_neighbors
@@ -23,7 +23,4 @@ using PyPlot
 include("Pyplot.jl")
 export plot
 
-# using Compose
-# include("SVG.jl")
-# export save_vis
 end # module

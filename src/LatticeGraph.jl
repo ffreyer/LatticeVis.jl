@@ -4,10 +4,10 @@ Nodes, Edges and Graphs as long as they fulfill a few requirements:
 
 - They must inherit from AbstractNode, AbstractEdge or AbstractGraph
   respectively
-- They must contain the fields SimpleSite, SimpleBond and SimpleGraph contain
+- They must contain the fields StandardSite, StandardBond and StandardGraph contain
 - They must have a constructor which only requires these fields.
 
-SimpleSite, SimpleBond and SimpleGraph are also generic in the sense that they
+StandardSite, StandardBond and StandardGraph are also generic in the sense that they
 should work with any type inheriting from AbstractNode, AbstractEdge or
 AbstractGraph.
 
@@ -31,25 +31,25 @@ abstract type AbstractNode end
 abstract type AbstractEdge end
 abstract type AbstractGraph end
 
-struct SimpleSite{N, T <: AbstractEdge} <: AbstractNode
+struct StandardSite{N, T <: AbstractEdge} <: AbstractNode
     neighbors::Vector{Vector{T}}
     uvw::NTuple{N, Int64}
 end
 
-function SimpleSite(
+function StandardSite(
         uc::UnitCell,
         neighbors::Vector{Vector{T}},
         uvw::NTuple{N, Int64}
     ) where {N, T <: AbstractEdge}
-    SimpleSite(neighbors, uvw)
+    StandardSite(neighbors, uvw)
 end
 
-struct SimpleBond{T <: AbstractNode} <: AbstractEdge
+struct StandardBond{T <: AbstractNode} <: AbstractEdge
     node1::T
     node2::T
 end
 
-struct SimpleGraph{
+struct StandardGraph{
         Dimensions,
         T,
         NodeType <: AbstractNode,
@@ -73,9 +73,9 @@ Additional keyword arguments (kwargs) include
 - `Ls::NTuple{D, Int64} = (L, ..., L)`: The size of the lattice in D dimensions.
 - `do_periodic::Bool = true`: Generate lattice with periodic bonds.
 - `N_neighbors::Int64 = 1`: The number neighbor levels used.
-- `nodetype::Type{N} = SimpleSite`: Type of Node used to construct the lattice.
-- `edgetype::Type{E} = SimpleBond`: Type of Edge used to construct the lattice.
-- `graphtype::Type{G} = SimpleGraph`: Type of Graph used to construct the lattice.
+- `nodetype::Type{N} = StandardSite`: Type of Node used to construct the lattice.
+- `edgetype::Type{E} = StandardBond`: Type of Edge used to construct the lattice.
+- `graphtype::Type{G} = StandardGraph`: Type of Graph used to construct the lattice.
 """
 function Lattice(
         uc::UnitCell{D, T};
@@ -83,9 +83,9 @@ function Lattice(
         Ls::NTuple{D, Int64} = ([L for _ in 1:D]...),
         do_periodic::Bool = true,
         N_neighbors::Int64 = 1,
-        nodetype::Type{N} = SimpleSite,
-        edgetype::Type{E} = SimpleBond,
-        graphtype::Type{G} = SimpleGraph
+        nodetype::Type{N} = StandardSite,
+        edgetype::Type{E} = StandardBond,
+        graphtype::Type{G} = StandardGraph
     ) where {D, T, N <: AbstractNode, E <: AbstractEdge, G <: AbstractGraph}
 
     dimsize = reduce(*, Ls)
