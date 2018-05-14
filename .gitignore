@@ -4,3 +4,4 @@
 src/deprecated
 src/SVG.jl
 examples/toric/*
+Roadmap.md
