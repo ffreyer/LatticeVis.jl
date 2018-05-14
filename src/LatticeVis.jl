@@ -5,8 +5,8 @@ __precompile__(true)
 using StaticArrays.FixedSizeArrays
 import Base: size, in, ==, +, show, merge
 
-include("Bravais.jl")
-export Bravais, get_pos, dims, merge
+include("UnitCell.jl")
+export UnitCell, get_pos, dims, merge
 export square, triangle, honeycomb
 export fcc, diamond
 

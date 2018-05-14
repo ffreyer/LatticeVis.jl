@@ -19,11 +19,11 @@ struct PosSite{D, T <: AbstractEdge} <: AbstractNode
     uvw::NTuple{D+1, Int64}
 end
 function PosSite(
-        B::Bravais,
+        uc::UnitCell{D, T},
         neighbors::Vector{Vector{ET}},
-        uvw::NTuple{D+1, T}
+        iuvw::NTuple
     ) where {D, T <: AbstractFloat, ET <: AbstractEdge}
-    PosSite(neighbors, get_pos(B, uvw))
+    PosSite(neighbors, get_pos(B, iuvw[1], uvw[2:end]))
 end
 =#
 
@@ -37,7 +37,7 @@ struct SimpleSite{N, T <: AbstractEdge} <: AbstractNode
 end
 
 function SimpleSite(
-        B::Bravais,
+        uc::UnitCell,
         neighbors::Vector{Vector{T}},
         uvw::NTuple{N, Int64}
     ) where {N, T <: AbstractEdge}
@@ -56,17 +56,17 @@ struct SimpleGraph{
         EdgeType <: AbstractEdge
     } <: AbstractGraph
 
-    bravais::Vector{Bravais{Dimensions, T}}
+    unitcell::UnitCell{Dimensions, T}
     nodes::Array{NodeType}
     edges::Vector{Vector{EdgeType}}
 end
 
 
 """
-    Lattice(B[; kwargs...])
+    Lattice(uc[; kwargs...])
 
-Generates a lattice of size L^d based on a Bravais lattice B, which can be given
-as a ::Function, a ::Bravais or a ::Vector{Bravais}.
+Generates a lattice of size L^d based on a UnitCell uc, which can be given
+as a ::Function, a ::UnitCell.
 
 Additional keyword arguments (kwargs) include
 - `L::Int64 = 8`: The size of the lattice
@@ -78,7 +78,7 @@ Additional keyword arguments (kwargs) include
 - `graphtype::Type{G} = SimpleGraph`: Type of Graph used to construct the lattice.
 """
 function Lattice(
-        Bs::Vector{Bravais{D, T}};
+        uc::UnitCell{D, T};
         L::Int64 = 8,
         Ls::NTuple{D, Int64} = ([L for _ in 1:D]...),
         do_periodic::Bool = true,
@@ -91,17 +91,17 @@ function Lattice(
     dimsize = reduce(*, Ls)
 
     # Search for neighbors
-    relative_offsets = get_neighbors(Bs, N_neighbors)
+    relative_offsets = get_neighbors(uc, N_neighbors)
 
     # Generate Nodes/Sites without edges
     # shape: (#number of Bravais lattices, L₁, ..., Lₙ) with n dimensions
     nodes = reshape([
         nodetype(
-            Bs[i],
+            uc,
             [edgetype[] for _ in relative_offsets[i]],
             (i, ind2sub(Ls, j)...)
-        ) for i in eachindex(Bs), j in 1:dimsize
-    ], length(Bs), Ls...)
+        ) for i in eachindex(uc.basis), j in 1:dimsize
+    ], length(uc.basis), Ls...)
 
 
     # Generate and connect edges
@@ -125,14 +125,13 @@ function Lattice(
         end
     end
 
-    graphtype(Bs, nodes, edges)
+    graphtype(uc, nodes, edges)
 end
 
 # Extra methods
-function Lattice(bravais_func::Function, args...; kwargs...)
-    Lattice(bravais_func(), args...; kwargs...)
+function Lattice(uc_func::Function, args...; kwargs...)
+    Lattice(uc_func(), args...; kwargs...)
 end
-Lattice(B::Bravais, args...; kwargs...) = Lattice([B], args...; kwargs...)
 
 
 ################################################################################
@@ -181,7 +180,7 @@ end
 
 # Pretty printing to avoid printing circular references
 function show(io::IO, g::T) where {T <: AbstractGraph}
-    D = dims(g.bravais)
+    D = dims(g.unitcell)
     print(io, "$D-dimensional lattice graph with ")
     print(io, length(g.nodes))
     print(io, " sites and ")
