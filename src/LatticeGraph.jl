@@ -160,7 +160,7 @@ function move(
         from::NTuple{N, T},     # starting indices
         by::NTuple{N, T},       # offset indices
         do_periodic::Bool,      # use periodic boundaries
-        Ls::NTuple{D, Int64}       # maximum index value
+        Ls::NTuple{D, Int64}    # maximum index value
     ) where {D, N, T}
 
     to = [from[i] + by[i] for i in 1:N]
@@ -172,7 +172,7 @@ function move(
         end
         return true, (to...)
     else
-        return all((x, L) -> 1 <= x <= L, to[2:end], Ls), (to...)
+        return all(xL -> 1 <= xL[1] <= xL[2], zip(to[2:end], Ls)), (to...)
     end
 end
 
