@@ -45,6 +45,6 @@ function plot2D(lattice::T) where {T <: AbstractGraph}
         end
     end
 
-    axis("equal")
+    PyPlot.axis("equal")
     lattice
 end
