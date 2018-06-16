@@ -40,7 +40,7 @@ function merge(ucs::UnitCell{D, T}...) where {D, T}
     @assert all(
         uc -> all(
             v -> v in ucs[1].dirs,
-            uc
+            uc.dirs
         ),
         ucs
     ) "Lattice vectors must match!"
@@ -182,7 +182,7 @@ function sc(;
     ) where T <: AbstractFloat
     UnitCell(
         :cubic,
-        pos,
+        [pos],
         (
             a * Vec(1., 0., 0.),
             b * Vec(0., 1., 0.),
@@ -225,7 +225,7 @@ function bcc(;
     else
         return UnitCell(
             :primitive,
-            pos,
+            [pos],
             (
                 a * 0.5 * Vec(1., 1., -1.),
                 b * 0.5 * Vec(1., -1., 1.),
@@ -274,7 +274,7 @@ function fcc(;
     else
         return UnitCell(
             :primitive,
-            pos,
+            [pos],
             (
                 a * 0.5 * Vec(1., 1., 0.),
                 b * 0.5 * Vec(1., 0., 1.),
