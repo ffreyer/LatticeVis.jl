@@ -1,3 +1,17 @@
+# GLVisualize throws a lot of information in your face. I don't want that, so
+# here's a Container with a show() to supress that.
+mutable struct Plot3DContainer
+    window::GLWindow.Screen
+    cam::Camera
+    hotkeys::Hotkeys
+end
+function show(io::IO, c::Plot3DContainer)
+    print(io, "Plot3DContainer with\n")
+    print(io, "\twindow\n")
+    print(io, "\tcam\n")
+    print(io, "\thotkeys\n")
+end
+
 function glsphere(;pos=Point3f0(0f0), r=0.1f0, quality=24)
     GLNormalMesh(HyperSphere(pos, r), quality)
 end
@@ -83,5 +97,5 @@ function plot3D(
 
     center!(window, :custom)
 
-    window, cam, hotkeys
+    Plot3DContainer(window, cam, hotkeys)
 end
