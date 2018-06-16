@@ -2,3 +2,13 @@ julia 0.6
 
 StaticArrays
 PyPlot
+
+Colors
+Reactive
+GeometryTypes
+Quaternions
+
+GLFW
+GLAbstraction
+GLWindow
+GLVisualize
