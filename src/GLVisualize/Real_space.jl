@@ -39,6 +39,7 @@ function plot3D(
         primitive::AbstractMesh = glsphere(),
         site_color::RGBA{Float32} = RGBA{Float32}(0.2, 0.4, 0.8, 1.0),
         bond_color::RGBA{Float32} = RGBA{Float32}(0.2, 0.2, 0.2, 1.0),
+        bond_thickness::Float32 = 5f0,
         kwargs...
     ) where {LatticeType <: AbstractGraph}
 
@@ -89,7 +90,8 @@ function plot3D(
         visualize(
             edge_positions,
             :linesegment,
-            color = bond_color
+            color = bond_color,
+            thickness = bond_thickness
         ),
         window,
         camera = cam
