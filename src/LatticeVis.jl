@@ -23,4 +23,6 @@ using PyPlot
 include("Pyplot.jl")
 export plot
 
+include("GLVisualize/Visualize.jl")
+
 end # module

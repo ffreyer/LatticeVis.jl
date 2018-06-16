@@ -3,8 +3,20 @@
 
 Creates a 2D plot of lattice using PyPlot.
 """
-function plot(lattice::T) where {T <: AbstractGraph}
-    @assert dims(lattice.unitcell) == 2 "plot only works for 2D lattices."
+function plot(lattice::T, args...; kwargs...) where {T <: AbstractGraph}
+    D = dims(lattice.unitcell)
+    if D == 2
+        plot2D(lattice, args...; kwargs...)
+    elseif D == 3
+        plot3D(lattice, args...; kwargs...)
+    else
+        error("No method available to plot $D-dimensional lattice.")
+    end
+end
+
+
+function plot2D(lattice::T) where {T <: AbstractGraph}
+    @assert dims(lattice.unitcell) == 2 "plot2D only works for 2D lattices."
 
     # Recover node positions
     positions = [
